@@ -1,0 +1,1085 @@
+{
+	"info": {
+		"_postman_id": "b1k3-b4z44r-h4ck4th0n",
+		"name": "BikeBazaar API",
+		"description": "Collection to test the Trust-First Marketplace API for BikeBazaar Hackathon.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Authentication",
+			"item": [
+				{
+					"name": "Register User (Default/Buyer)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"john.doe@example.com\",\n    \"password\": \"securePassword123\",\n    \"name\": \"John Doe\",\n    \"phone\": \"+919876543210\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Seller",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set(\"jwt_token\", jsonData.token);",
+									"    console.log(\"Token updated successfully\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"seller@example.com\",\n    \"password\": \"sellerPass123\",\n    \"name\": \"Seller John\",\n    \"phone\": \"+919876543211\",\n    \"role\": \"seller\",\n    \"roleDetails\": {\n        \"businessName\": \"John's Super Bikes\",\n        \"gstNumber\": \"29ABCDE1234F1Z5\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Mechanic",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set(\"jwt_token\", jsonData.token);",
+									"    console.log(\"Token updated successfully\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"mechanic@example.com\",\n    \"password\": \"mechanicPass123\",\n    \"name\": \"Mechanic Mike\",\n    \"phone\": \"+919876543212\",\n    \"role\": \"mechanic\",\n    \"roleDetails\": {\n        \"experienceYears\": 5,\n        \"shopAddress\": \"45 Garage Lane, Chennai\",\n        \"hourlyRate\": 500,\n        \"isMobileService\": true\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set(\"jwt_token\", jsonData.token);",
+									"    console.log(\"Token updated successfully\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"john.doe@example.com\",\n    \"password\": \"securePassword123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Upload Signature",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/auth/upload-signature",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"upload-signature"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. User Profile",
+			"item": [
+				{
+					"name": "Get My Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Address",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"street\": \"123 Gandhi Road\",\n    \"city\": \"Bangalore\",\n    \"state\": \"Karnataka\",\n    \"zip\": \"560001\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user/address",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user",
+								"address"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Seller Actions",
+			"item": [
+				{
+					"name": "Get My Listings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/seller/my-listings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"seller",
+								"my-listings"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Products (Marketplace)",
+			"item": [
+				{
+					"name": "Create Product (Bike)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if(jsonData.id) {",
+									"    pm.collectionVariables.set(\"product_id\", jsonData.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"BIKE\",\n    \"title\": \"Royal Enfield Classic 350\",\n    \"description\": \"Well maintained, single owner. Includes AudioCheck.\",\n    \"price\": 150000,\n    \"images\": [\"http://example.com/bike1.jpg\"],\n    \"condition\": \"USED\",\n    \"brand\": \"Royal Enfield\",\n    \"model\": \"Classic 350\",\n    \"year\": 2021,\n    \"kmDriven\": 12000,\n    \"ownership\": 1,\n    \"stock\": 1,\n    \"address\": \"123, Bikers Lane, Chennai\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Updated Royal Enfield Classic 350\",\n    \"price\": 145000,\n    \"addImages\": [\n        {\n            \"publicId\": \"new_image_1\",\n            \"url\": \"http://example.com/new_bike1.jpg\"\n        }\n    ],\n    \"deleteImageIds\": []\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products/{{product_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"{{product_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/{{product_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"{{product_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Product (Accessory)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"ACCESSORY\",\n    \"title\": \"Studds Helmet\",\n    \"description\": \"Matte Black, Size L\",\n    \"price\": 2500,\n    \"images\": [\"http://example.com/helmet.jpg\"],\n    \"condition\": \"NEW\",\n    \"stock\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Products (Filter by Bike)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products?type=BIKE&brand=Royal Enfield",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "BIKE"
+								},
+								{
+									"key": "brand",
+									"value": "Royal Enfield"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Dashboard Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/dashboard?bikePage=1&bikeLimit=10&accPage=1&accLimit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"dashboard"
+							],
+							"query": [
+								{
+									"key": "bikePage",
+									"value": "1"
+								},
+								{
+									"key": "bikeLimit",
+									"value": "10"
+								},
+								{
+									"key": "accPage",
+									"value": "1"
+								},
+								{
+									"key": "accLimit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Categories",
+					"item": [
+						{
+							"name": "Create Category",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Helmets\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/products/categories",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Categories",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products/categories/all",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"products",
+										"categories",
+										"all"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "5. Mechanic Services",
+			"item": [
+				{
+					"name": "Add Service",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if(jsonData.id) {",
+									"    pm.collectionVariables.set(\"service_id\", jsonData.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Pre-purchase Inspection\",\n    \"description\": \"Comprehensive 50-point check including engine health\",\n    \"basePrice\": 299\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/mechanic/service",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"mechanic",
+								"service"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Mechanics",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"// Store the first mechanic found for booking test",
+									"if(jsonData.length > 0) {",
+									"    pm.collectionVariables.set(\"mechanic_id\", jsonData[0].id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/mechanic",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"mechanic"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "6. Bookings (Uber for Mechanics)",
+			"item": [
+				{
+					"name": "Book a Mechanic",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mechanicId\": \"{{mechanic_id}}\",\n    \"serviceId\": \"{{service_id}}\",\n    \"date\": \"2024-05-20T10:00:00Z\",\n    \"notes\": \"Please check the engine noise specifically.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/bookings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bookings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Bookings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/bookings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bookings"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "7. Orders (Cart & Checkout)",
+			"item": [
+				{
+					"name": "Add to Cart",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"productId\": \"{{product_id}}\",\n    \"quantity\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/cart",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Cart",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders/cart",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Checkout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/checkout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"checkout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Cart Item",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/cart/{{cart_item_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"cart",
+								"{{cart_item_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Cart Item",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders/cart/{{cart_item_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"cart",
+								"{{cart_item_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Orders (Buyer)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders/my-orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"my-orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Seller Sales",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders/seller-orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"seller-orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product Sales History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders/product/{{product_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"product",
+								"{{product_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders/{{order_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"{{order_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "8. Inspections",
+			"item": [
+				{
+					"name": "Get My Inspections (Buyer)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/inspections/my-inspections",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inspections",
+								"my-inspections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Inspection Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/inspections/{{inspection_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inspections",
+								"{{inspection_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Inspection",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/inspections/{{inspection_id}}/cancel",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inspections",
+								"{{inspection_id}}",
+								"cancel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request Inspection",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if(jsonData.id) {",
+									"    pm.collectionVariables.set(\"inspection_id\", jsonData.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"productId\": \"{{product_id}}\",\n    \"offerAmount\": 500,\n    \"message\": \"Please check the engine and brakes.\",\n    \"scheduledDate\": \"2024-06-01T10:00:00Z\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/inspections/request",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inspections",
+								"request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Available Inspections (Marketplace)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/inspections/available",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inspections",
+								"available"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Mechanic Inspections (Gigs)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/inspections/mechanic",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inspections",
+								"mechanic"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Inspection Status (Accept/Reject)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"ACCEPTED\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/inspections/{{inspection_id}}/status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inspections",
+								"{{inspection_id}}",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Submit Inspection Report",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"scores\": {\n        \"engine\": 85,\n        \"tires\": 90,\n        \"brakes\": 80,\n        \"electrical\": 88\n    },\n    \"overallComment\": \"Everything looks good, minor wear on engine.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/inspections/{{inspection_id}}/report",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inspections",
+								"{{inspection_id}}",
+								"report"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Seller Inspections",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/inspections/seller",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inspections",
+								"seller"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000/api",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "product_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "mechanic_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "service_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "inspection_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

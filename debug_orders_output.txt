@@ -1,0 +1,7 @@
+Starting Order Debugging...
+Product Created: f11125db-fb8e-4d23-85ee-c0c1cdc5eac6
+Order Placed: 0cdfbfab-b88e-4f86-b3e7-24d082d064ad
+Found Order in My Orders.
+Item Count: 1
+First Item: {"id":"bc5b5328-b49b-4c7d-97d6-0933cdaf075e","orderId":"0cdfbfab-b88e-4f86-b3e7-24d082d064ad","productId":"f11125db-fb8e-4d23-85ee-c0c1cdc5eac6","quantity":2,"priceAtPurchase":100,"product":{"title":"Debug Item","images":[],"type":"ACCESSORY"}}
+PASS: Items are present.

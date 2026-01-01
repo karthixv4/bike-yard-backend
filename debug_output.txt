@@ -1,0 +1,43 @@
+
+Create Product Status: 201
+Create Product Response: {
+  "id": "86af3bf5-de7a-4e79-9b17-5859eec6e42f",
+  "sellerId": "a73309a7-5d6b-4e2a-87d3-48aeea02d1b3",
+  "type": "BIKE",
+  "title": "Ather 450X Gen 3 - Space Grey",
+  "description": "Electric performance scooter. Battery health at 98%. Under warranty till 2026.",
+  "price": 110000,
+  "condition": "MINT",
+  "brand": "Ather",
+  "model": "450X Gen 3 - Space Grey",
+  "year": 2023,
+  "kmDriven": 3500,
+  "ownership": 1,
+  "stock": 1,
+  "isSold": false,
+  "createdAt": "2025-12-31T07:56:31.905Z",
+  "updatedAt": "2025-12-31T07:56:31.905Z",
+  "categoryId": "f4a3f01a-3029-448a-93d4-42986722f763",
+  "images": [
+    {
+      "id": "810494f9-2a83-4bc2-b9c7-d13d7f1cdb8b",
+      "publicId": "products/ttfboyacmnbunxpgn8sz",
+      "url": "https://res.cloudinary.com/dtqkltvop/image/upload/v1767167277/products/ttfboyacmnbunxpgn8sz.jpg",
+      "width": 872,
+      "height": 578,
+      "format": "jpg",
+      "size": 71763,
+      "position": 0,
+      "productId": "86af3bf5-de7a-4e79-9b17-5859eec6e42f",
+      "createdAt": "2025-12-31T07:56:31.914Z"
+    }
+  ],
+  "seller": {
+    "id": "a73309a7-5d6b-4e2a-87d3-48aeea02d1b3",
+    "userId": "7e01d852-33dd-4a27-9d73-41bcf14d7013",
+    "businessName": "Debug Business",
+    "gstNumber": "GSTDEBUG123",
+    "isVerified": true
+  }
+}
+        
