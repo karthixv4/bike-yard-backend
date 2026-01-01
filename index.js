@@ -1,28 +1,51 @@
-// index.js - Restart 12
-const express = require('express'); // Force Restart 2
+const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const compression = require('compression');
+const rateLimit = require('express-rate-limit');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./src/config/swagger');
 require('dotenv').config();
 
-// Import central router
+// central router
 const apiRoutes = require('./src/routes/routes');
 
-// App Init
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Trust Proxy (Required for Rate Limiting behind load balancers like Vercel/Heroku/Railway)
+app.set('trust proxy', 1);
+
 // Global Middleware
-app.use(express.json());       // Parse JSON bodies
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(helmet());             // Security Headers
-app.use(morgan('dev'));        // Logging
-app.use(cors({
-    origin: true, // <--- Set this to true (instead of '*') to allow any origin with credentials
+app.use(helmet());
+app.use(compression());
+
+// Logging
+if (process.env.NODE_ENV === 'production') {
+    app.use(morgan('combined'));
+} else {
+    app.use(morgan('dev'));
+}
+
+// Rate Limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+app.use('/api', limiter); // Apply to API routes only
+
+// CORS
+const corsOptions = {
+    origin: process.env.CORS_ORIGIN || true,
     credentials: true,
-}));
+};
+app.use(cors(corsOptions));
+
 // Health Check
 app.get('/', (req, res) => {
     res.send('BikeBazaar API is running 🚀');
