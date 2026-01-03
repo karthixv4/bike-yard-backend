@@ -1,5 +1,12 @@
 const express = require('express');
-const { getProfile, updateUserProfile, addBikeToGarage, getMyGarage } = require('../controllers/userController');
+const {
+    getProfile,
+    updateUserProfile,
+    addBikeToGarage,
+    getMyGarage,
+    updateBikeInGarage,
+    getBikeServiceHistory
+} = require('../controllers/userController');
 const router = express.Router();
 
 /**
@@ -147,5 +154,60 @@ router.post('/garage', addBikeToGarage);
  *         description: List of bikes
  */
 router.get('/garage', getMyGarage);
+
+/**
+ * @swagger
+ * /user/garage/{id}:
+ *   put:
+ *     summary: Update a bike in garage
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               brand:
+ *                 type: string
+ *               model:
+ *                 type: string
+ *               year:
+ *                 type: integer
+ *               registration:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Bike updated
+ */
+router.put('/garage/:id', updateBikeInGarage);
+
+/**
+ * @swagger
+ * /user/garage/{id}/history:
+ *   get:
+ *     summary: Get service history of a bike
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Service history list
+ */
+router.get('/garage/:id/history', getBikeServiceHistory);
 
 module.exports = router;

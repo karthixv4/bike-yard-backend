@@ -110,4 +110,79 @@ const getMyGarage = async (req, res) => {
   }
 };
 
-module.exports = { getProfile, updateUserProfile, addBikeToGarage, getMyGarage };
+const updateBikeInGarage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { brand, model, year, registration } = req.body;
+    const userId = req.user.id;
+
+    // Verify ownership
+    const bike = await prisma.userBike.findUnique({ where: { id } });
+    if (!bike) {
+      return res.status(404).json({ message: "Bike not found" });
+    }
+    if (bike.userId !== userId) {
+      return res.status(403).json({ message: "Not authorized to update this bike" });
+    }
+
+    const updatedBike = await prisma.userBike.update({
+      where: { id },
+      data: {
+        brand,
+        model,
+        year: year ? parseInt(year) : undefined,
+        registration
+      }
+    });
+
+    res.json(updatedBike);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getBikeServiceHistory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    // Verify ownership
+    const bike = await prisma.userBike.findUnique({ where: { id } });
+    if (!bike) {
+      return res.status(404).json({ message: "Bike not found" });
+    }
+    if (bike.userId !== userId) {
+      return res.status(403).json({ message: "Not authorized to view history for this bike" });
+    }
+
+    // Fetch service history
+    const history = await prisma.inspection.findMany({
+      where: {
+        userBikeId: id,
+        type: 'SERVICE'
+      },
+      include: {
+        mechanic: {
+          select: {
+            shopAddress: true,
+            user: { select: { name: true, phone: true } }
+          }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    res.json(history);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = {
+  getProfile,
+  updateUserProfile,
+  addBikeToGarage,
+  getMyGarage,
+  updateBikeInGarage,
+  getBikeServiceHistory
+};
