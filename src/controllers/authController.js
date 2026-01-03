@@ -68,7 +68,7 @@ const register = async (req, res) => {
               brand: "",
               model: roleDetails.bikeModel,
               year: roleDetails.bikeYear ? parseInt(roleDetails.bikeYear) : 2024,
-              registration: "XX XX XXXX"
+              registration: roleDetails.registration || "XX XX XXXX"
             }
           });
         }

@@ -1,5 +1,5 @@
 const express = require('express');
-const { getMyListings } = require('../controllers/sellerController');
+const { getMyListings, updateSellerProfile } = require('../controllers/sellerController');
 const router = express.Router();
 
 /**
@@ -61,7 +61,42 @@ const router = express.Router();
  *       500:
  *         description: Internal server error
  */
-// Route removed
+/**
+ * @swagger
+ * /seller/profile:
+ *   put:
+ *     summary: Update seller profile
+ *     tags: [Seller]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               businessName:
+ *                 type: string
+ *               gstNumber:
+ *                 type: string
+ *               name:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               street:
+ *                 type: string
+ *               city:
+ *                 type: string
+ *               state:
+ *                 type: string
+ *               zip:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Profile updated
+ */
+router.put('/profile', updateSellerProfile);
 
 /**
  * @swagger
