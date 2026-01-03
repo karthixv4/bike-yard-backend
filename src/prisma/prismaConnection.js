@@ -4,9 +4,17 @@ const { Pool } = require("pg");
 
 const connectionString = process.env.DATABASE_URL;
 
-const pool = new Pool({ connectionString });
+const pool = new Pool({
+  connectionString,
+  max: 10, // Limit pool size
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 5000,
+});
 const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient({
+  adapter,
+  log: ['info', 'warn', 'error'], // Add logging
+});
 
 async function connectDB() {
   try {

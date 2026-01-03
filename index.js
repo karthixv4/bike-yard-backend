@@ -1,3 +1,4 @@
+// index.js - Restart 14
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -16,6 +17,13 @@ const PORT = process.env.PORT || 5000;
 
 // Trust Proxy (Required for Rate Limiting behind load balancers like Vercel/Heroku/Railway)
 app.set('trust proxy', 1);
+
+// CORS
+const corsOptions = {
+    origin: process.env.CORS_ORIGIN || true,
+    credentials: true,
+};
+app.use(cors(corsOptions));
 
 // Global Middleware
 app.use(express.json());
@@ -39,12 +47,12 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter); // Apply to API routes only
 
-// CORS
-const corsOptions = {
-    origin: process.env.CORS_ORIGIN || true,
-    credentials: true,
-};
-app.use(cors(corsOptions));
+// // CORS
+// const corsOptions = {
+//     origin: process.env.CORS_ORIGIN || true,
+//     credentials: true,
+// };
+// app.use(cors(corsOptions));
 
 // Health Check
 app.get('/', (req, res) => {

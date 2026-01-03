@@ -74,4 +74,40 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
-module.exports = { getProfile, updateUserProfile };
+const addBikeToGarage = async (req, res) => {
+  try {
+    const { brand, model, year, registration } = req.body;
+
+    if (!brand || !model || !year) {
+      return res.status(400).json({ message: "Brand, model, and year are required" });
+    }
+
+    const bike = await prisma.userBike.create({
+      data: {
+        userId: req.user.id,
+        brand,
+        model,
+        year: parseInt(year),
+        registration
+      }
+    });
+
+    res.status(201).json(bike);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getMyGarage = async (req, res) => {
+  try {
+    const bikes = await prisma.userBike.findMany({
+      where: { userId: req.user.id },
+      orderBy: { createdAt: 'desc' }
+    });
+    res.json(bikes);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { getProfile, updateUserProfile, addBikeToGarage, getMyGarage };

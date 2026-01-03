@@ -59,6 +59,19 @@ const register = async (req, res) => {
             isVerified: false
           }
         });
+      } else if (role === 'user') {
+        // Handle User Bike Registration
+        if (roleDetails && roleDetails.hasBike && roleDetails.bikeModel) {
+          await prisma.userBike.create({
+            data: {
+              userId: newUser.id,
+              brand: "",
+              model: roleDetails.bikeModel,
+              year: roleDetails.bikeYear ? parseInt(roleDetails.bikeYear) : 2024,
+              registration: "XX XX XXXX"
+            }
+          });
+        }
       }
 
       return newUser;

@@ -355,7 +355,7 @@ const getDashboardProducts = async (req, res) => {
     ]);
 
     // Fetch Accessories & Parts
-    const [accessories, totalAccessories] = await Promise.all([
+    const [accessoriesRaw, totalAccessories] = await Promise.all([
       prisma.product.findMany({
         where: {
           type: { in: ['ACCESSORY', 'PART'] },
@@ -365,7 +365,8 @@ const getDashboardProducts = async (req, res) => {
         take: accLimit,
         include: {
           images: { orderBy: { position: "asc" }, take: 1 },
-          seller: { select: { businessName: true } }
+          seller: { select: { businessName: true } },
+          category: true
         },
         orderBy: { createdAt: 'desc' }
       }),
@@ -376,6 +377,12 @@ const getDashboardProducts = async (req, res) => {
         }
       })
     ]);
+
+    // Format Accessories to include category name
+    const accessories = accessoriesRaw.map(item => ({
+      ...item,
+      category: item.category?.name || "Uncategorized" // Hoist category name
+    }));
 
     res.json({
       bikes: {

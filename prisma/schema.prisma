@@ -18,13 +18,14 @@ model User {
   addresses       Address[]
   adminProfile    AdminProfile?
   bookings        Booking[]
-  cart            CartItem[]
+  carts           CartItem[]
   inspections     Inspection[]     @relation("BuyerInspections")
   mechanicProfile MechanicProfile?
   orders          Order[]
   reviews         Review[]
   sellerProfile   SellerProfile?
   profileImage    Image?           @relation("UserProfileImage", fields: [profileImageId], references: [id])
+  bikes           UserBike[]
 }
 
 model Image {
@@ -185,11 +186,28 @@ model Review {
   product   Product? @relation(fields: [productId], references: [id])
 }
 
+// ... (User Model Update below)
+
+model UserBike {
+  id           String       @id @default(uuid())
+  userId       String
+  brand        String
+  model        String
+  year         Int
+  registration String?
+  createdAt    DateTime     @default(now())
+  user         User         @relation(fields: [userId], references: [id])
+  inspections  Inspection[] // Services requested for this bike
+}
+
 model Inspection {
   id              String           @id @default(uuid())
-  productId       String
+  productId       String?          // Optional: For pre-purchase inspection
+  userBikeId      String?          // Optional: For garage service
   buyerId         String
   mechanicId      String?
+  type            InspectionType   @default(INSPECTION) // INSPECTION or SERVICE
+  serviceType     String?          // e.g., "Water Wash", "Oil Change"
   offerAmount     Float
   message         String?
   status          InspectionStatus @default(PENDING)
@@ -201,7 +219,13 @@ model Inspection {
   updatedAt       DateTime         @updatedAt
   buyer           User             @relation("BuyerInspections", fields: [buyerId], references: [id])
   mechanic        MechanicProfile? @relation(fields: [mechanicId], references: [id])
-  product         Product          @relation(fields: [productId], references: [id])
+  product         Product?         @relation(fields: [productId], references: [id])
+  userBike        UserBike?       @relation(fields: [userBikeId], references: [id])
+}
+
+enum InspectionType {
+  INSPECTION
+  SERVICE
 }
 
 enum ProductType {

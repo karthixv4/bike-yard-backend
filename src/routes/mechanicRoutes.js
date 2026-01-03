@@ -1,5 +1,6 @@
 const express = require('express');
-const { addService, getMechanics } = require('../controllers/mechanicController');
+const { addService, getMechanics, updateProfile } = require('../controllers/mechanicController');
+const verifyJWT = require('../middleware/authMiddleware');
 const router = express.Router();
 
 /**
@@ -67,7 +68,47 @@ const router = express.Router();
  *       500:
  *         description: Internal server error
  */
-router.post('/service', addService);
+router.post('/service', verifyJWT, addService);
+
+/**
+ * @swagger
+ * /mechanic/profile:
+ *   put:
+ *     summary: Update mechanic profile
+ *     description: Update mechanic's professional and personal details
+ *     tags: [Mechanic]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               experienceYears:
+ *                 type: integer
+ *               shopAddress:
+ *                 type: string
+ *               isMobileService:
+ *                 type: boolean
+ *               hourlyRate:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Profile updated successfully
+ *       404:
+ *         description: Mechanic profile not found
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+router.put('/profile', verifyJWT, updateProfile);
 
 /**
  * @swagger

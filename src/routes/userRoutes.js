@@ -1,5 +1,5 @@
 const express = require('express');
-const { getProfile, updateUserProfile } = require('../controllers/userController');
+const { getProfile, updateUserProfile, addBikeToGarage, getMyGarage } = require('../controllers/userController');
 const router = express.Router();
 
 /**
@@ -97,7 +97,55 @@ router.get('/profile', getProfile);
  *         description: Unauthorized
  *       500:
  *         description: Internal server error
+ * 
  */
 router.put('/profile', updateUserProfile);
+
+/**
+ * @swagger
+ * /user/garage:
+ *   post:
+ *     summary: Add a bike to my garage
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - brand
+ *               - model
+ *               - year
+ *             properties:
+ *               brand:
+ *                 type: string
+ *               model:
+ *                 type: string
+ *               year:
+ *                 type: integer
+ *               registration:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Bike added
+ */
+router.post('/garage', addBikeToGarage);
+
+/**
+ * @swagger
+ * /user/garage:
+ *   get:
+ *     summary: Get all bikes in my garage
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of bikes
+ */
+router.get('/garage', getMyGarage);
 
 module.exports = router;

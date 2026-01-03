@@ -1,38 +1,54 @@
 const prisma = require('../prisma/prismaConnection');
 
-// 1. Buyer: Request Inspection
+// 1. Buyer: Request Inspection or Service
 const requestInspection = async (req, res) => {
     try {
-        const { productId, mechanicId, offerAmount, message, scheduledDate } = req.body;
-        console.log("Req user: ", req.user)
+        const {
+            productId,
+            userBikeId,
+            type = 'INSPECTION', // INSPECTION or SERVICE
+            serviceType,
+            offerAmount,
+            message,
+            scheduledDate
+        } = req.body;
+
         const buyerId = req.user.id;
 
-        // Validate Product
-        const product = await prisma.product.findUnique({
-            where: { id: productId }
-        });
+        // Validation based on Type
+        if (type === 'INSPECTION') {
+            if (!productId) return res.status(400).json({ message: "Product ID is required for inspections" });
+            const product = await prisma.product.findUnique({ where: { id: productId } });
+            if (!product) return res.status(404).json({ message: "Product not found" });
+            if (product.type !== 'BIKE') return res.status(400).json({ message: "Inspections are only available for bikes" });
+        } else if (type === 'SERVICE') {
+            if (!userBikeId) return res.status(400).json({ message: "User Bike ID is required for services" });
+            if (!serviceType) return res.status(400).json({ message: "Service Type (e.g., Water Wash) is required" });
 
-        if (!product) return res.status(404).json({ message: "Product not found" });
-        if (product.type !== 'BIKE') {
-            return res.status(400).json({ message: "Inspections are only available for bikes" });
+            const bike = await prisma.userBike.findUnique({ where: { id: userBikeId } });
+            if (!bike) return res.status(404).json({ message: "Bike not found in garage" });
+            if (bike.userId !== buyerId) return res.status(403).json({ message: "You don't own this bike" });
+        } else {
+            return res.status(400).json({ message: "Invalid request type" });
         }
 
-        // Validate Offer Amount (Minimum 500)
-        if (offerAmount < 500) {
-            return res.status(400).json({ message: "Minimum offer amount is 500" });
+        // Validate Offer Amount (Minimum 500 can be arbitrary, keeping it for now)
+        if (offerAmount && offerAmount < 100) {
+            return res.status(400).json({ message: "Minimum offer amount is 100" });
         }
 
-        // Create Inspection
+        // Create Request
         const inspectionData = {
-            productId,
+            productId: type === 'INSPECTION' ? productId : undefined,
+            userBikeId: type === 'SERVICE' ? userBikeId : undefined,
             buyerId,
-            mechanicId: mechanicId || undefined,
+            type,
+            serviceType,
             offerAmount: parseFloat(offerAmount),
             message,
             scheduledDate: scheduledDate ? new Date(scheduledDate) : undefined,
             status: 'PENDING'
         };
-        console.log("Inspection Data:", inspectionData);
 
         const inspection = await prisma.inspection.create({
             data: inspectionData
@@ -44,7 +60,7 @@ const requestInspection = async (req, res) => {
     }
 };
 
-// 1.1 Buyer: Get My Inspections
+// 1.1 Buyer: Get My Requests
 const getMyInspections = async (req, res) => {
     try {
         const inspections = await prisma.inspection.findMany({
@@ -53,6 +69,7 @@ const getMyInspections = async (req, res) => {
                 product: {
                     select: { title: true, brand: true, model: true, images: { take: 1 } }
                 },
+                userBike: true, // Include garage bike details
                 mechanic: {
                     select: { user: { select: { name: true, phone: true } } }
                 }
@@ -65,7 +82,8 @@ const getMyInspections = async (req, res) => {
     }
 };
 
-// 1.2 Get Inspection by ID (Shared)
+
+// 1.2 Get Request by ID
 const getInspectionById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -74,25 +92,28 @@ const getInspectionById = async (req, res) => {
         const inspection = await prisma.inspection.findUnique({
             where: { id },
             include: {
-                product: {
-                    include: { seller: true }
+                product: { include: { seller: true } },
+                userBike: true,
+                mechanic: {
+                    include: {
+                        user: {
+                            select: { name: true, phone: true }
+                        }
+                    }
                 },
-                mechanic: true,
-                buyer: {
-                    select: { id: true, name: true, phone: true }
-                }
+                buyer: { select: { id: true, name: true, phone: true } }
             }
         });
 
-        if (!inspection) return res.status(404).json({ message: "Inspection not found" });
+        if (!inspection) return res.status(404).json({ message: "Request not found" });
 
-        // Authorization: Buyer, Assigned Mechanic, or Seller
+        // Authorization
         const isBuyer = inspection.buyerId === userId;
         const isMechanic = inspection.mechanic && inspection.mechanic.userId === userId;
-        const isSeller = inspection.product.seller.userId === userId;
+        const isSeller = inspection.product?.seller?.userId === userId; // Only for inspections
 
         if (!isBuyer && !isMechanic && !isSeller) {
-            return res.status(403).json({ message: "Not authorized to view this inspection" });
+            return res.status(403).json({ message: "Not authorized to view this request" });
         }
 
         res.json(inspection);
@@ -101,41 +122,31 @@ const getInspectionById = async (req, res) => {
     }
 };
 
-// 2. Mechanic: Get My Inspections (Gigs)
+// 2. Mechanic: Get My Jobs (Gigs)
 const getMechanicInspections = async (req, res) => {
     try {
-        const mechanicProfile = await prisma.mechanicProfile.findUnique({
-            where: { userId: req.user.id }
-        });
-
+        const mechanicProfile = await prisma.mechanicProfile.findUnique({ where: { userId: req.user.id } });
         if (!mechanicProfile) return res.status(403).json({ message: "Not authorized as mechanic" });
 
         const inspections = await prisma.inspection.findMany({
             where: { mechanicId: mechanicProfile.id },
             include: {
-                product: {
-                    select: { title: true, brand: true, model: true, address: true, images: { take: 1 } }
-                },
-                buyer: {
-                    select: { name: true, phone: true }
-                }
+                product: { select: { title: true, brand: true, model: true, address: true, images: { take: 1 } } },
+                userBike: true,
+                buyer: { select: { name: true, phone: true } }
             },
             orderBy: { createdAt: 'desc' }
         });
-
         res.json(inspections);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
-// 3. Mechanic: Get Available Inspections (Marketplace)
+// 3. Mechanic: Get Available Gigs (Marketplace)
 const getAvailableInspections = async (req, res) => {
     try {
-        const mechanicProfile = await prisma.mechanicProfile.findUnique({
-            where: { userId: req.user.id }
-        });
-
+        const mechanicProfile = await prisma.mechanicProfile.findUnique({ where: { userId: req.user.id } });
         if (!mechanicProfile) return res.status(403).json({ message: "Not authorized as mechanic" });
 
         const inspections = await prisma.inspection.findMany({
@@ -144,16 +155,12 @@ const getAvailableInspections = async (req, res) => {
                 status: 'PENDING'
             },
             include: {
-                product: {
-                    select: { title: true, brand: true, model: true, address: true, images: { take: 1 } }
-                },
-                buyer: {
-                    select: { name: true } // Only name visible before acceptance
-                }
+                product: { select: { title: true, brand: true, model: true, address: true, images: { take: 1 } } },
+                userBike: true,
+                buyer: { select: { name: true } } // Only name visible before acceptance
             },
             orderBy: { createdAt: 'desc' }
         });
-
         res.json(inspections);
     } catch (error) {
         res.status(500).json({ message: error.message });
