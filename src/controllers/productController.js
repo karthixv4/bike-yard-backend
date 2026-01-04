@@ -346,7 +346,7 @@ const getDashboardProducts = async (req, res) => {
         skip: bikeSkip,
         take: bikeLimit,
         include: {
-          images: { orderBy: { position: "asc" }, take: 1 }, // Fetch only primary image
+          images: { orderBy: { position: "asc" } },
           seller: { select: { businessName: true } }
         },
         orderBy: { createdAt: 'desc' }
@@ -364,7 +364,7 @@ const getDashboardProducts = async (req, res) => {
         skip: accSkip,
         take: accLimit,
         include: {
-          images: { orderBy: { position: "asc" }, take: 1 },
+          images: { orderBy: { position: "asc" } },
           seller: { select: { businessName: true } },
           category: true
         },

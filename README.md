@@ -1,31 +1,32 @@
 # Bike Yard Backend API
 
-A comprehensive backend for the BikeBazaar marketplace, facilitating the buying and selling of used bikes, parts, and accessories.
+A comprehensive backend for the **Bike Yard** marketplace, facilitating the buying and selling of used bikes, parts, and accessories, along with mechanic services and inspections.
 
 ## 🚀 Features
 
-*   **User Management**:
-    *   Authentication & Authorization (JWT).
-    *   Role-based profiles: Buyer, Seller, Mechanic.
-    *   Profile Updates (Personal details + Address management).
-*   **Product Management**:
-    *   Listings for Bikes, Parts, and Accessories.
-    *   Image handling via Cloudinary.
-    *   **Stock Management**: Strict stock control (Bikes = 1, sold-out checks, auto-restocking on cancellation).
-    *   Search & Filters (Category, Price, Brand, Model).
-*   **Inspections**:
-    *   Schedule mechanic inspections for used bikes.
-    *   Generate and view inspection reports.
-*   **Orders & Cart**:
-    *   Cart management (Add/Update/Remove items).
-    *   Secure Checkout (Razorpay integration ready).
-    *   Order Status updates (Shipped, Delivered, Cancelled).
-    *   **Restocking**: Automatically restock items when orders are cancelled.
-*   **Security & Performance** (Production Ready):
-    *   Rate Limiting (DDoS protection).
-    *   Response Compression (Gzip/Brotli).
-    *   Helmet Security Headers.
-    *   CORS protection.
+### 👤 User Management
+*   **Authentication**: Secure JWT-based auth.
+*   **Role-Based Access**: Specialized profiles for Buyers, Sellers, Mechanics, and Admins.
+*   **My Garage**: Users can add and manage their own bikes for service history and inspections.
+*   **Addresses**: Manage multiple shipping/billing addresses.
+
+### 🛒 Marketplace & Products
+*   **Listings**: Sell Bikes, Accessories, and Parts.
+*   **Stock Management**: Auto-handling of stock levels (Single unit for bikes).
+*   **Search & Filter**: Find products by category, price, brand, etc.
+*   **Cart & Orders**: Full shopping cart functionality with Razorpay integration support.
+*   **Images**: Optimized image handling using Cloudinary.
+
+### 🔧 Services & Inspections
+*   **Inspections**: Schedule pre-purchase inspections for used bikes.
+*   **Mechanic Services**: Mechanics can offer specific services (Oil Change, Wash, etc.) with customizable pricing.
+*   **Service Bookings**: Users can book mechanics for their "Garage" bikes.
+*   **Reports**: Detailed inspection reports with pass/fail criteria and notes.
+
+### 🛡️ Admin & Security
+*   **Admin Panel**: Backend support for platform administration.
+*   **Seller Verification**: Business name and GST verification flows.
+*   **Security**: Rate limiting, Helmet headers, CORS, and Data compression.
 
 ## 🛠️ Tech Stack
 
@@ -34,22 +35,21 @@ A comprehensive backend for the BikeBazaar marketplace, facilitating the buying 
 *   **Database**: PostgreSQL
 *   **ORM**: Prisma
 *   **Storage**: Cloudinary
-*   **Docs**: Swagger UI (`/api-docs`)
+*   **Docs**: Swagger UI
 
 ## ⚡ Getting Started
 
 ### 1. Prerequisites
 *   Node.js (v18+)
-*   PostgreSQL Database
+*   PostgreSQL
 *   Cloudinary Account
-*   Razorpay Account (Optional for payments)
 
 ### 2. Installation
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/your-username/xathon-backend.git
-    cd xathon-backend
+    git clone https://github.com/your-username/bike-yard-backend.git
+    cd bike-yard-backend
     ```
 
 2.  Install dependencies:
@@ -58,55 +58,38 @@ A comprehensive backend for the BikeBazaar marketplace, facilitating the buying 
     ```
 
 3.  Configure Environment:
-    Create a `.env` file in the root directory (see `.env.example` or Deployment Guide).
+    Create a `.env` file (see `.env.example`):
     ```env
-    DATABASE_URL="postgresql://user:pass@host:5432/db?schema=public"
-    JWT_SECRET="your_jwt_secret"
-    PORT=5000
+    DATABASE_URL="postgresql://..."
+    JWT_SECRET="your_secret"
     CLOUD_NAME="your_cloud_name"
-    CLOUD_API_KEY="your_api_key"
-    CLOUD_API_SECRET="your_api_secret"
+    CLOUD_API_KEY="your_key"
+    CLOUD_API_SECRET="your_secret"
     ```
 
-4.  Initialize Database:
+4.  Database Setup:
     ```bash
-    npx prisma generate
     npx prisma migrate dev --name init
     ```
 
 ### 3. Running the App
 
-*   **Development**:
+*   **Development** (Hot-reload):
     ```bash
     npm run dev
     ```
-    *Runs with nodemon for hot-reloading.*
-
 *   **Production**:
     ```bash
     npm start
     ```
-    *Runs using standard node command.*
 
 ## 📚 API Documentation
 
-Once the server is running, visit:
-**[http://localhost:5000/api-docs](http://localhost:5000/api-docs)**
-
-to view the interactive Swagger documentation for all endpoints.
+Visit **`http://localhost:5000/api-docs`** for interactive Swagger documentation.
 
 ## 🚢 Deployment
 
-Detailed deployment instructions for Vercel, Railway, and others are available in **[deployment_guide.md](./deployment_guide.md)**.
-
-## 🤝 Contributing
-
-1.  Fork the repository.
-2.  Create your feature branch (`git checkout -b feature/AmazingFeature`).
-3.  Commit your changes (`git commit -m 'Add some AmazingFeature'`).
-4.  Push to the branch (`git push origin feature/AmazingFeature`).
-5.  Open a Pull Request.
+See **[deployment_guide.md](./deployment_guide.md)** for Vercel/Railway deployment instructions.
 
 ## 📄 License
-
-This project is licensed under the ISC License.
+ISC License.
